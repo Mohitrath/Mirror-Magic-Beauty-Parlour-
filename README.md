@@ -1,57 +1,80 @@
-# Mirror Magic Beauty Parlour
+<h1 align="center">Mirror Magic Beauty Parlour</h1>
+<p align="center"><em>A look inside the studio on Kurra Road, Rath.</em></p>
 
-A Next.js salon website with the two original salon photos, a 3D gallery, a customer-facing menu without displayed prices, appointment booking and a private staff desk. The app uses local SQLite for development and a hosted Turso database on Vercel. A fresh database starts with the sample service menu and stylists. Bookings on the existing ChatGPT site belong to its separate database.
+<p align="center">
+  <a href="https://raw.githubusercontent.com/Mohitrath/Mirror-Magic-Beauty-Parlour-/main/public/images/styling-mirror.webp"><img src="https://raw.githubusercontent.com/Mohitrath/Mirror-Magic-Beauty-Parlour-/main/public/images/styling-mirror.webp" width="36%" alt="A gold-lit styling mirror under pink ceiling lights at Mirror Magic"></a>
+  &nbsp;
+  <a href="https://raw.githubusercontent.com/Mohitrath/Mirror-Magic-Beauty-Parlour-/main/public/images/reception.webp"><img src="https://raw.githubusercontent.com/Mohitrath/Mirror-Magic-Beauty-Parlour-/main/public/images/reception.webp" width="36%" alt="The reception desk beside an arched mirror and pink balloons"></a>
+</p>
+<p align="center"><em>The styling mirror and the reception corner. Select either photo for a closer look.</em></p>
 
-## Run on your computer
+Mirror Magic’s booking website lets visitors explore hair, skin, makeup and nail services, choose a specialist, and reserve an available time. The gallery uses the studio’s own photographs, with a gentle 3D tilt on desktop and tap-to-enlarge on mobile.
 
-1. Install Node.js 24.x with npm. Check with `node -v`.
-2. Extract the ZIP. In VS Code, open the folder containing `package.json` and open Terminal.
-3. Run these commands one at a time.
+[Run locally](#run-locally) · [Deploy to Vercel](#deploy-to-vercel) · [Staff access](#staff-access) · [Project files](#project-files)
+
+## Booking a visit
+
+1. **Choose a treatment.** Filter the service menu by category and check how long each treatment takes.
+2. **Reserve a time.** Choose a specialist and an available slot, then save the booking reference from the confirmation.
+3. **Manage the appointment.** Open **My bookings** to reschedule or cancel. On another device, look up the visit with the reference and the email used to book.
+
+The app uses Next.js and TypeScript. Local development uses a SQLite file. The Vercel deployment uses a separate Turso database and starts with the sample service menu and stylists.
+
+## Run locally
+
+Install **Node.js 24.x** with npm, then run:
 
 ```bash
+git clone https://github.com/Mohitrath/Mirror-Magic-Beauty-Parlour-.git mirror-magic
+cd mirror-magic
 npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. The first start creates `studio.db` beside `package.json`. Bookings persist when the server restarts. Stop it with Ctrl+C. To test the production build locally, run `npm run build` and then `npm start`.
+Open [localhost:3000](http://localhost:3000). The first run creates `studio.db` in the project folder. If you downloaded the ZIP, extract it, open the folder containing `package.json`, and start with `npm ci`. To test the production build, stop the development server and run `npm run build` followed by `npm start`.
 
 ## Deploy to Vercel
 
-1. Create a database in [Turso](https://app.turso.tech/). Open its dashboard and copy the database URL beginning with `libsql://`. Generate a database token with read and write access. Keep the token private.
-2. Create a GitHub repository and upload the extracted project files. Keep the folder structure, including `public/images`, `scripts`, `db`, and `drizzle`. The repository root should contain `package.json`. If using Git, the included .gitignore excludes local credentials, installed packages and booking data.
-3. In [Vercel](https://vercel.com/new), import the repository. Choose **Next.js**, Node.js **24.x**, and the root directory containing `package.json`. Use the framework defaults for install, build and output. The build initializes the database tables.
-4. Before clicking **Deploy**, add these values under **Environment Variables**.
+1. Create a [Turso database](https://app.turso.tech/) and generate a read/write database token.
+2. [Import this repository into Vercel](https://vercel.com/new). Choose **Next.js**, **Node.js 24.x**, and the repository root (`./`). Keep the default build and output settings.
+3. Add the environment variables below to **Production** and click **Deploy**. The build creates the database tables. For preview deployments, use a separate test database and token.
 
-| Name | Value | Used for |
-| --- | --- | --- |
-| TURSO_DATABASE_URL | Your libsql:// database URL | Persistent bookings |
-| TURSO_AUTH_TOKEN | Your private read/write database token | Database access |
-| STUDIO_STAFF_KEY | A random private key of at least 32 characters | Optional staff sign-in |
+| Environment variable | What to enter |
+| --- | --- |
+| `TURSO_DATABASE_URL` | The database URL beginning with `libsql://` |
+| `TURSO_AUTH_TOKEN` | The private read/write token for that database |
+| `STUDIO_STAFF_KEY` | Optional private key of at least 32 characters for the staff desk |
 
-5. Select **Production** for the production values. If using Vercel Preview deployments, configure the same variable names for **Preview** with a separate test database and token. Click **Deploy**. After changing an environment variable, redeploy to apply it.
-6. Open your Vercel URL. Check the photos and service menu, then make a test booking. Open **My bookings**, reload, and check that you can find and cancel the test appointment. The API health endpoint is `/api/health`.
+After deployment, open `/api/health` to check database connectivity. To verify the customer flow, reserve a test appointment, reload **My bookings**, and cancel it. Appointments made on the original ChatGPT-hosted site stay in that site’s database.
 
 ## Staff access
 
-Generate a random staff key in your terminal.
+Staff can manage appointments and edit the service menu at `/staff`. Generate a private access key with:
 
 ```bash
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-Set that value as STUDIO_STAFF_KEY in Vercel. For local staff access, copy .env.example to .env.local, set STUDIO_STAFF_KEY, and restart the local server. On /staff enter the key to manage appointments and services. Staff sessions expire after eight hours. Rotating the key and redeploying invalidates earlier sessions. Customers use the guest booking flow. For lookup on another device, use the booking reference and the original email.
+Save the value as `STUDIO_STAFF_KEY` in Vercel and redeploy. For local use, copy `.env.example` to `.env.local`, set the key there, and restart the server. Enter the key at `/staff`. Sessions last eight hours. Rotating the key and redeploying ends earlier sessions.
 
-## Common setup issues
+<details>
+<summary><strong>Setup troubleshooting</strong></summary>
 
-- If the build asks for Turso variables, check the spelling, the selected Vercel environment, and that you supplied a database token with write access. Redeploy after saving.
-- If Vercel cannot find Next.js, choose the directory that contains package.json as the root.
-- To use the hosted database on your computer, put its URL and token in .env.local and restart. Use a dedicated development database for test appointments.
+- **Missing database configuration during build?** Check both Turso variable names, the token’s write access, and the selected Vercel environment. Redeploy after saving changes.
+- **Vercel can’t detect Next.js?** Set the root directory to the folder containing `package.json`.
+- **Testing with a hosted database locally?** Put the development database URL and token in `.env.local`, then restart the server.
+
+</details>
 
 ## Project files
 
-- app and components/studio contain the pages, gallery, booking forms and staff dashboard.
-- lib/server contains booking logic and staff sessions. db contains the database adapter.
-- drizzle and scripts contain the SQL schema, database setup and source download generator.
-- public contains the two uploaded photos, other site imagery, fonts and installable app assets.
+| Location | What you’ll find |
+| --- | --- |
+| `app/` | Pages and API routes |
+| `components/studio/` | Interactive gallery, booking forms and staff dashboard |
+| `lib/server/` | Availability checks, appointment changes and staff sessions |
+| `db/` and `drizzle/` | Database connection and SQL schema |
+| `scripts/` | Database setup and source download generator |
+| `public/images/` | Original studio photographs and service imagery |
 
-Further reading: [Next.js on Vercel](https://vercel.com/docs/frameworks/full-stack/nextjs) and [Turso TypeScript client](https://docs.turso.tech/sdk/ts/reference).
+[Next.js on Vercel](https://vercel.com/docs/frameworks/full-stack/nextjs) · [Turso TypeScript client](https://docs.turso.tech/sdk/ts/reference)
