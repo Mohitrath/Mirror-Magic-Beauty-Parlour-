@@ -1,0 +1,30 @@
+{
+  "name": "mirror-magic-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:init": "node --env-file-if-exists=.env.local scripts/init-db.mjs",
+    "predev": "npm run db:init && node scripts/package-source.mjs",
+    "prebuild": "npm run db:init && node scripts/package-source.mjs"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "lucide-react": "^1.31.0",
+    "next": "16.3.4",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "fflate": "^0.8.2",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "/",
+  "name": "Mirror Magic Beauty Palour",
+  "short_name": "Mirror Magic",
+  "description": "Explore the treatment menu and book a visit in Rath.",
+  "lang": "en-IN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fcf9f6",
+  "theme_color": "#69283e",
+  "icons": [
+    {
+      "src": "/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app-icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "My bookings",
+      "url": "/bookings"
+    },
+    {
+      "name": "Explore services",
+      "url": "/#services"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/previews/desktop.jpg",
+      "sizes": "1348x926",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "The Mirror Magic studio website and service menu"
+    },
+    {
+      "src": "/previews/phone.jpg",
+      "sizes": "375x844",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "The Mirror Magic mobile home screen"
+    }
+  ]
+}
